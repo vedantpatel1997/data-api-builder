@@ -109,7 +109,7 @@ namespace Azure.DataApiBuilder.Service.HealthCheck
                 HttpRequestMessage message = new(method: HttpMethod.Get, requestUri: apiRoute);
                 if (!string.IsNullOrEmpty(incomingRoleToken))
                 {
-                    message.Headers.Add(AuthenticationOptions.CLIENT_PRINCIPAL_HEADER, incomingRoleToken);
+                    AddAuthTokenHeader(message, incomingRoleToken);
                 }
 
                 if (!string.IsNullOrEmpty(incomingRoleHeader))
@@ -174,7 +174,7 @@ namespace Azure.DataApiBuilder.Service.HealthCheck
 
                     if (!string.IsNullOrEmpty(incomingRoleToken))
                     {
-                        message.Headers.Add(AuthenticationOptions.CLIENT_PRINCIPAL_HEADER, incomingRoleToken);
+                        AddAuthTokenHeader(message, incomingRoleToken);
                     }
 
                     if (!string.IsNullOrEmpty(incomingRoleHeader))
@@ -201,6 +201,18 @@ namespace Azure.DataApiBuilder.Service.HealthCheck
                 _logger.LogError($"An exception occurred while executing the GraphQL health check query: {ex.Message}");
                 return ex.Message;
             }
+        }
+
+        private void AddAuthTokenHeader(HttpRequestMessage message, string incomingRoleToken)
+        {
+            AuthenticationOptions? authOptions = _runtimeConfigProvider.GetConfig().Runtime?.Host?.Authentication;
+            if (authOptions is not null && authOptions.IsJwtConfiguredIdentityProvider())
+            {
+                message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", incomingRoleToken);
+                return;
+            }
+
+            message.Headers.Add(AuthenticationOptions.CLIENT_PRINCIPAL_HEADER, incomingRoleToken);
         }
     }
 }

@@ -233,6 +233,19 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
             Assert.AreEqual(string.Empty, roleToken);
         }
 
+        [TestMethod]
+        public void ReadRoleHeaders_BearerAuthorizationHeader_ReturnsJwtToken()
+        {
+            HealthCheckHelper helper = CreateHelper();
+            DefaultHttpContext context = new();
+            context.Request.Headers.Authorization = "Bearer sample-jwt-token";
+
+            (string roleHeader, string roleToken) = helper.ReadRoleHeaders(context);
+
+            Assert.AreEqual(string.Empty, roleHeader);
+            Assert.AreEqual("sample-jwt-token", roleToken);
+        }
+
         /// <summary>
         /// Tests that the cached health response does not reuse a previous caller's currentRole.
         /// GetCurrentRole is a pure function: same input always produces same output,

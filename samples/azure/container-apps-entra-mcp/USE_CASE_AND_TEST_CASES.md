@@ -128,6 +128,29 @@ healthState = Healthy
 provisioningState = Provisioned
 ```
 
+## Test Case 1A: OpenAPI and Health Route Expectations
+
+Purpose: Confirm the deployment exposes the production-safe documentation and health routes for this OBO sample.
+
+```powershell
+Invoke-WebRequest -Uri "$base/api/openapi"
+Invoke-WebRequest -Uri "$base/health" -Headers $headers
+```
+
+Expected result:
+
+```text
+/api/openapi -> 200
+/health -> 200 for authenticated callers
+```
+
+Notes:
+
+```text
+/swagger is not expected to work in this production deployment because Swagger UI is only enabled in Development mode.
+Data-source health is intentionally disabled in this sample because user-delegated Azure SQL access cannot be validated by an anonymous background probe.
+```
+
 ## Test Case 2: Container App Identity and Key Vault Secret Are Wired
 
 Purpose: Confirm ACA uses the user-assigned managed identity and reads the OBO secret from Key Vault.
@@ -603,4 +626,3 @@ MCP tools/list: includes read_records
 MCP read_records: 200 and returned dbo_Todos rows
 Latest GitHub Actions deploy run: success
 ```
-

@@ -69,14 +69,23 @@ namespace Azure.DataApiBuilder.Service.HealthCheck
         {
             StringValues clientRoleHeader = httpContext.Request.Headers[AuthorizationResolver.CLIENT_ROLE_HEADER];
             StringValues clientTokenHeader = httpContext.Request.Headers[AuthenticationOptions.CLIENT_PRINCIPAL_HEADER];
+            StringValues authorizationHeader = httpContext.Request.Headers["Authorization"];
 
-            if (clientRoleHeader.Count > 1 || clientTokenHeader.Count > 1)
+            if (clientRoleHeader.Count > 1 || clientTokenHeader.Count > 1 || authorizationHeader.Count > 1)
             {
                 throw new ArgumentException("Multiple values for the client role or token header are not allowed.");
             }
 
             string roleHeader = clientRoleHeader.Count == 1 ? clientRoleHeader.ToString().ToLowerInvariant() : string.Empty;
             string roleToken = clientTokenHeader.Count == 1 ? clientTokenHeader.ToString() : string.Empty;
+
+            if (string.IsNullOrEmpty(roleToken) &&
+                authorizationHeader.Count == 1 &&
+                authorizationHeader.ToString().StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                roleToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
+            }
+
             return (roleHeader, roleToken);
         }
 

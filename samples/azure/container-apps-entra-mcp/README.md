@@ -116,6 +116,7 @@ For this production sample:
 - OpenAPI JSON is available at `https://<container-app-fqdn>/api/openapi`
 - Swagger UI at `/swagger` is only enabled in Development mode, so it is not expected to work here
 - Comprehensive health is available at `https://<container-app-fqdn>/health` for the `authenticated` role
+- Data-source health is disabled in this sample because Azure SQL access is user-delegated; a background health probe cannot impersonate a user by itself
 
 Example:
 

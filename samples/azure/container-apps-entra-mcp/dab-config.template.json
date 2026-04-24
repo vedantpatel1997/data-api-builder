@@ -6,6 +6,9 @@
     "options": {
       "set-session-context": false
     },
+    "health": {
+      "enabled": false
+    },
     "user-delegated-auth": {
       "enabled": true,
       "provider": "EntraId",
