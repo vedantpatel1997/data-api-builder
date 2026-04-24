@@ -198,6 +198,7 @@ This repo includes `.github/workflows/deploy-dab-aca.yml`.
 On every push to `main`, the workflow:
 
 - signs in to Azure using GitHub OIDC,
+- generates `dab-config.generated.json` from the checked-in template,
 - builds the DAB image with `samples/azure/container-apps-entra-mcp/Dockerfile`,
 - pushes the image to `acrdabmcpkwcm0e.azurecr.io/dab-aca-mcp-demo:<commit-sha>`,
 - updates Container App `ca-dabmcp-kwcm0e`,

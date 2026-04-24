@@ -15,10 +15,14 @@ env:
   AZURE_TENANT_ID: be945e7a-2e17-4b44-926f-512e85873eec
   AZURE_SUBSCRIPTION_ID: 6a3bb170-5159-4bff-860b-aa74fb762697
   AZURE_RESOURCE_GROUP: rg-dab-aca-mcp-auth-demo
+  DAB_API_AUDIENCE: 5d211457-2361-4626-924c-487f5877e79e
+  KEY_VAULT_ENDPOINT: https://kv-dabmcp-kwcm0e.vault.azure.net/
   ACR_NAME: acrdabmcpkwcm0e
   CONTAINER_APP_NAME: ca-dabmcp-kwcm0e
   IMAGE_REPOSITORY: dab-aca-mcp-demo
   DOCKERFILE_PATH: samples/azure/container-apps-entra-mcp/Dockerfile
+  DAB_CONFIG_TEMPLATE_PATH: samples/azure/container-apps-entra-mcp/dab-config.template.json
+  DAB_CONFIG_GENERATED_PATH: samples/azure/container-apps-entra-mcp/dab-config.generated.json
   BUILD_CONTEXT: .
 
 jobs:
@@ -54,6 +58,15 @@ jobs:
       - name: Login to ACR
         shell: bash
         run: az acr login --name "$ACR_NAME" --resource-group "$AZURE_RESOURCE_GROUP"
+
+      - name: Generate DAB config
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp "$DAB_CONFIG_TEMPLATE_PATH" "$DAB_CONFIG_GENERATED_PATH"
+          sed -i "s|__KEY_VAULT_ENDPOINT__|$KEY_VAULT_ENDPOINT|g" "$DAB_CONFIG_GENERATED_PATH"
+          sed -i "s|__TENANT_ID__|$AZURE_TENANT_ID|g" "$DAB_CONFIG_GENERATED_PATH"
+          sed -i "s|__DAB_API_AUDIENCE__|$DAB_API_AUDIENCE|g" "$DAB_CONFIG_GENERATED_PATH"
 
       - name: Build image
         shell: bash
