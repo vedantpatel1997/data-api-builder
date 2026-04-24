@@ -4,6 +4,8 @@ This sample deploys Data API builder (DAB) to Azure Container Apps (ACA) for the
 
 The deployment intentionally keeps Azure resources in one resource group so you can show the full flow to a customer without hunting through the portal.
 
+For the customer use case, validation commands, and detailed test cases, see `USE_CASE_AND_TEST_CASES.md`.
+
 ## What This Creates
 
 The script creates:
