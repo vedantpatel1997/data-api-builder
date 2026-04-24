@@ -218,10 +218,11 @@ That client ID belongs to the `github-actions-dab-aca-cicd` Entra application. I
 The Azure identity behind `AZURE_CLIENT_ID` needs:
 
 - `AcrPush` on the ACR when the registry uses legacy registry permissions.
+- `Reader` on the ACR so Azure CLI can resolve registry metadata such as `loginServer`.
 - `Container Registry Repository Writer` on the ACR when the registry uses ABAC repository permissions.
 - `Container Apps Contributor` on the target Container App or resource group.
 
-For this demo ACR, the registry uses legacy permissions, so `github-actions-dab-aca-cicd` has `AcrPush` on `acrdabmcpkwcm0e` and `Container Apps Contributor` on `ca-dabmcp-kwcm0e`.
+For this demo ACR, the registry uses legacy permissions, so `github-actions-dab-aca-cicd` has `AcrPush` and `Reader` on `acrdabmcpkwcm0e`, plus `Container Apps Contributor` on `ca-dabmcp-kwcm0e`.
 
 The deployed DAB API still requires a user-delegated token for REST, GraphQL, and MCP OBO testing. The workflow verifies that ACA accepted the image and the new revision became ready; user OBO smoke testing should use the `tokenCommand` from `deployment.outputs.json`.
 
