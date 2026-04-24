@@ -191,6 +191,46 @@ az ad app list --display-name "dab-aca-mcp-demo-<suffix>" --query "[].appId" -o 
 az ad app delete --id <app-client-id>
 ```
 
+## GitHub Actions CI/CD
+
+This repo includes `.github/workflows/deploy-dab-aca.yml`.
+
+On every push to `main`, the workflow:
+
+- signs in to Azure using GitHub OIDC,
+- builds the DAB image with `samples/azure/container-apps-entra-mcp/Dockerfile`,
+- pushes the image to `acrdabmcpkwcm0e.azurecr.io/dab-aca-mcp-demo:<commit-sha>`,
+- updates Container App `ca-dabmcp-kwcm0e`,
+- waits until the latest revision is ready.
+
+The workflow expects these GitHub repository secrets:
+
+```text
+AZURE_CLIENT_ID
+AZURE_TENANT_ID
+AZURE_SUBSCRIPTION_ID
+```
+
+For this deployed demo, use:
+
+```text
+AZURE_CLIENT_ID=ed126750-5930-4b42-ae1f-67af7f1110f5
+AZURE_TENANT_ID=be945e7a-2e17-4b44-926f-512e85873eec
+AZURE_SUBSCRIPTION_ID=6a3bb170-5159-4bff-860b-aa74fb762697
+```
+
+That client ID belongs to the `github-actions-dab-aca-cicd` Entra application. It has a federated credential for GitHub OIDC with subject `repo:vedantpatel1997/data-api-builder:ref:refs/heads/main`, so only GitHub Actions runs from the `main` branch of this repo can exchange an OIDC token for Azure access.
+
+The Azure identity behind `AZURE_CLIENT_ID` needs:
+
+- `AcrPush` on the ACR when the registry uses legacy registry permissions.
+- `Container Registry Repository Writer` on the ACR when the registry uses ABAC repository permissions.
+- `Container Apps Contributor` on the target Container App or resource group.
+
+For this demo ACR, the registry uses legacy permissions, so `github-actions-dab-aca-cicd` has `AcrPush` on `acrdabmcpkwcm0e` and `Container Apps Contributor` on `ca-dabmcp-kwcm0e`.
+
+The deployed DAB API still requires a user-delegated token for REST, GraphQL, and MCP OBO testing. The workflow verifies that ACA accepted the image and the new revision became ready; user OBO smoke testing should use the `tokenCommand` from `deployment.outputs.json`.
+
 ## Useful References
 
 - DAB configuration schema: `schemas/dab.draft.schema.json`
