@@ -11,6 +11,9 @@ permissions:
   id-token: write
 
 env:
+  AZURE_CLIENT_ID: ed126750-5930-4b42-ae1f-67af7f1110f5
+  AZURE_TENANT_ID: be945e7a-2e17-4b44-926f-512e85873eec
+  AZURE_SUBSCRIPTION_ID: 6a3bb170-5159-4bff-860b-aa74fb762697
   AZURE_RESOURCE_GROUP: rg-dab-aca-mcp-auth-demo
   ACR_NAME: acrdabmcpkwcm0e
   CONTAINER_APP_NAME: ca-dabmcp-kwcm0e
@@ -30,9 +33,9 @@ jobs:
       - name: Azure login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
 
       - name: Resolve image name
         id: image

@@ -203,21 +203,15 @@ On every push to `main`, the workflow:
 - updates Container App `ca-dabmcp-kwcm0e`,
 - waits until the latest revision is ready.
 
-The workflow expects these GitHub repository secrets:
-
-```text
-AZURE_CLIENT_ID
-AZURE_TENANT_ID
-AZURE_SUBSCRIPTION_ID
-```
-
-For this deployed demo, use:
+For this deployed demo, the workflow stores the Azure OIDC identifiers directly as workflow environment variables:
 
 ```text
 AZURE_CLIENT_ID=ed126750-5930-4b42-ae1f-67af7f1110f5
 AZURE_TENANT_ID=be945e7a-2e17-4b44-926f-512e85873eec
 AZURE_SUBSCRIPTION_ID=6a3bb170-5159-4bff-860b-aa74fb762697
 ```
+
+These values are identifiers, not passwords. For customer environments, you can keep the same pattern or move them to GitHub repository variables.
 
 That client ID belongs to the `github-actions-dab-aca-cicd` Entra application. It has a federated credential for GitHub OIDC with subject `repo:vedantpatel1997/data-api-builder:ref:refs/heads/main`, so only GitHub Actions runs from the `main` branch of this repo can exchange an OIDC token for Azure access.
 
