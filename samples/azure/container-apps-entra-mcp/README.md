@@ -109,6 +109,24 @@ Invoke-RestMethod `
   -Body $body
 ```
 
+## OpenAPI and Health
+
+For this production sample:
+
+- OpenAPI JSON is available at `https://<container-app-fqdn>/api/openapi`
+- Swagger UI at `/swagger` is only enabled in Development mode, so it is not expected to work here
+- Comprehensive health is available at `https://<container-app-fqdn>/health` for the `authenticated` role
+
+Example:
+
+```powershell
+Invoke-WebRequest -Uri "https://<container-app-fqdn>/api/openapi"
+
+Invoke-WebRequest `
+  -Uri "https://<container-app-fqdn>/health" `
+  -Headers @{ Authorization = "Bearer $token" }
+```
+
 ## Test MCP
 
 Use the MCP inspector:

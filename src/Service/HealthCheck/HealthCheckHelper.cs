@@ -107,7 +107,7 @@ namespace Azure.DataApiBuilder.Service.HealthCheck
                 return isDevelopmentMode;
             }
 
-            return allowedRoles.Contains(roleHeader);
+            return allowedRoles.Any(role => string.Equals(role, roleHeader, StringComparison.OrdinalIgnoreCase));
         }
 
         // Updates the overall status by comparing all the internal HealthStatuses in the response.

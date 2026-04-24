@@ -294,6 +294,36 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
             }
         }
 
+        [TestMethod]
+        public void IsUserAllowedToAccessHealthCheck_MatchingRoleDifferentCase_ReturnsTrue()
+        {
+            HealthCheckHelper helper = CreateHelper();
+            HashSet<string> allowedRoles = new(StringComparer.Ordinal)
+            {
+                "authenticated"
+            };
+
+            bool allowed = helper.IsUserAllowedToAccessHealthCheck(
+                isDevelopmentMode: false,
+                allowedRoles: allowedRoles,
+                roleHeader: "Authenticated");
+
+            Assert.IsTrue(allowed);
+        }
+
+        [TestMethod]
+        public void IsUserAllowedToAccessHealthCheck_NoConfiguredRolesInProduction_ReturnsFalse()
+        {
+            HealthCheckHelper helper = CreateHelper();
+
+            bool allowed = helper.IsUserAllowedToAccessHealthCheck(
+                isDevelopmentMode: false,
+                allowedRoles: new HashSet<string>(),
+                roleHeader: "Authenticated");
+
+            Assert.IsFalse(allowed);
+        }
+
         private static HealthCheckHelper CreateHelper()
         {
             Mock<ILogger<HealthCheckHelper>> loggerMock = new();

@@ -43,6 +43,12 @@
         }
       }
     },
+    "health": {
+      "enabled": true,
+      "roles": [
+        "authenticated"
+      ]
+    },
     "cache": {
       "enabled": false
     }
